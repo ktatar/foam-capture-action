@@ -1,10 +1,7 @@
 import * as process from 'process'
 import * as core from '@actions/core'
-import {
-  opinionatedBootstrap,
-  captureToInbox,
-  cleanupReferences
-} from 'foam-capture'
+import {opinionatedBootstrap, cleanupReferences} from 'foam-capture'
+import {captureToTaggedInbox} from './inbox'
 
 async function run(): Promise<void> {
   try {
@@ -20,8 +17,9 @@ async function run(): Promise<void> {
       )
       return
     }
+    // File the capture into inbox.md before foam scans the workspace, so cleanup sees the update
+    captureToTaggedInbox(workspace, capture)
     const foam = await opinionatedBootstrap(workspace)
-    await captureToInbox(foam, capture)
     await cleanupReferences(foam, {'without-extensions': undefined})
 
     core.setOutput('time', new Date().toTimeString())
