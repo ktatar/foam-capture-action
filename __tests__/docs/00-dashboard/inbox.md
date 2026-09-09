@@ -1,7 +1,7 @@
 # Inbox
 
 ## Critical Tasks
-- Fix the outage
+- Fix the outage #critical
 
 ## Next Actions
 

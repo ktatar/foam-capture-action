@@ -13,14 +13,14 @@ export interface ParsedCapture {
   section: string
 }
 
-// Extracts a trailing #tag (e.g. "#critical") and maps it to its target section.
+// Extracts a trailing #tag (e.g. "#critical") to determine its target section, keeping the tag in the text.
 export function parseCapture(capture: string): ParsedCapture {
   const trimmed = capture.trim()
   const match = trimmed.match(/#(\w+)\s*$/)
   if (match) {
     const section = TAG_SECTIONS[match[1].toLowerCase()]
     if (section) {
-      return {text: trimmed.slice(0, match.index).trim(), section}
+      return {text: trimmed, section}
     }
   }
   return {text: trimmed, section: DEFAULT_SECTION}
@@ -66,11 +66,12 @@ export function insertIntoSection(
 
 // Reads (or creates) inbox.md and files the capture under the section matching its tag.
 export function captureToTaggedInbox(workspace: string, capture: string): void {
-  const inboxPath = path.join(workspace, 'inbox.md')
+  const inboxPath = path.join(workspace, 'docs', '00-dashboard', 'inbox.md')
   const {text, section} = parseCapture(capture)
   const content = fs.existsSync(inboxPath)
     ? fs.readFileSync(inboxPath, 'utf8')
     : '# Inbox'
 
+  fs.mkdirSync(path.dirname(inboxPath), {recursive: true})
   fs.writeFileSync(inboxPath, insertIntoSection(content, section, text))
 }

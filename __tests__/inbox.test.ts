@@ -1,23 +1,23 @@
 import {parseCapture, insertIntoSection} from '../src/inbox'
 
 describe('parseCapture', () => {
-  test('extracts #critical tag into Critical Tasks section', () => {
+  test('extracts #critical tag into Critical Tasks section, keeping the tag', () => {
     expect(parseCapture('Fix the outage #critical')).toEqual({
-      text: 'Fix the outage',
+      text: 'Fix the outage #critical',
       section: 'Critical Tasks'
     })
   })
 
-  test('extracts #next tag into Next Actions section', () => {
+  test('extracts #next tag into Next Actions section, keeping the tag', () => {
     expect(parseCapture('Write the report #next')).toEqual({
-      text: 'Write the report',
+      text: 'Write the report #next',
       section: 'Next Actions'
     })
   })
 
-  test('extracts #waiting tag into Waiting For section', () => {
+  test('extracts #waiting tag into Waiting For section, keeping the tag', () => {
     expect(parseCapture('Reply from vendor #waiting')).toEqual({
-      text: 'Reply from vendor',
+      text: 'Reply from vendor #waiting',
       section: 'Waiting For'
     })
   })
@@ -38,7 +38,7 @@ describe('parseCapture', () => {
 
   test('tag matching is case-insensitive', () => {
     expect(parseCapture('Fix the outage #CRITICAL')).toEqual({
-      text: 'Fix the outage',
+      text: 'Fix the outage #CRITICAL',
       section: 'Critical Tasks'
     })
   })
