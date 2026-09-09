@@ -11733,12 +11733,12 @@ exports.captureToInbox = async (foam, capture) => {
     // Try to find an inbox
     const inboxNote = notes.find(note => {
         const relativePath = path.relative(workspace.fsPath, note.source.uri.fsPath);
-        return relativePath == "inbox.md";
+        return relativePath == path.join("docs", "00-dashboard", "inbox.md");
     });
     let inboxNoteContent, inboxNoteURI, inboxEol;
     if (inboxNote === undefined) { // We'll create an inbox if needed
         inboxNoteContent = `# Inbox\n\n- ${capture}`;
-        inboxNoteURI = foam_core_1.URI.file(path.join(workspace.fsPath, "inbox.md"));
+        inboxNoteURI = foam_core_1.URI.file(path.join(workspace.fsPath, "docs", "00-dashboard", "inbox.md"));
         inboxEol = "\n";
     }
     else {

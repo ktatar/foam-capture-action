@@ -9,5 +9,5 @@ inputs:
     required: true
     description: 'The information you would like to capture.'
 runs:
-  using: 'node12'
+  using: 'node24'
   main: 'dist/index.js'
