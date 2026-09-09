@@ -47,7 +47,33 @@ describe('parseCapture', () => {
 describe('insertIntoSection', () => {
   test('creates the section when it does not exist', () => {
     const result = insertIntoSection('# Inbox', 'Critical Tasks', 'Fix the outage')
-    expect(result).toBe('# Inbox\n\n## Critical Tasks\n- Fix the outage')
+    expect(result).toBe(
+      '# Inbox\n\n## Critical Tasks\n\n- Fix the outage'
+    )
+  })
+
+  test('adds a blank line before the first item of an already-empty section', () => {
+    const content = [
+      '# Inbox',
+      '',
+      '## Critical Tasks',
+      '',
+      '## Notes'
+    ].join('\n')
+
+    const result = insertIntoSection(content, 'Critical Tasks', 'Fix the outage')
+
+    expect(result).toBe(
+      [
+        '# Inbox',
+        '',
+        '## Critical Tasks',
+        '',
+        '- Fix the outage',
+        '',
+        '## Notes'
+      ].join('\n')
+    )
   })
 
   test('appends to the end of an existing section', () => {

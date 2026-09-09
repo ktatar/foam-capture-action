@@ -66,6 +66,7 @@ function parseCapture(capture) {
 }
 exports.parseCapture = parseCapture;
 // Inserts `- item` as the last entry of the given `## section`, creating the section if needed.
+// A blank line always separates the heading from its first item.
 function insertIntoSection(content, section, item) {
     const heading = `## ${section}`;
     const lines = content.split('\n');
@@ -75,22 +76,29 @@ function insertIntoSection(content, section, item) {
         if (newLines.length > 0 && newLines[newLines.length - 1].trim() !== '') {
             newLines.push('');
         }
-        newLines.push(heading, `- ${item}`);
+        newLines.push(heading, '', `- ${item}`);
         return newLines.join('\n');
     }
-    let insertIndex = lines.length;
+    let sectionEnd = lines.length;
     for (let i = headingIndex + 1; i < lines.length; i++) {
         if (/^#{1,6}\s/.test(lines[i])) {
-            insertIndex = i;
+            sectionEnd = i;
             break;
         }
     }
-    while (insertIndex > headingIndex + 1 &&
-        lines[insertIndex - 1].trim() === '') {
-        insertIndex--;
+    let lastItemIndex = -1;
+    for (let i = headingIndex + 1; i < sectionEnd; i++) {
+        if (lines[i].trim().startsWith('- ')) {
+            lastItemIndex = i;
+        }
     }
     const newLines = [...lines];
-    newLines.splice(insertIndex, 0, `- ${item}`);
+    if (lastItemIndex !== -1) {
+        newLines.splice(lastItemIndex + 1, 0, `- ${item}`);
+    }
+    else {
+        newLines.splice(headingIndex + 1, 0, '', `- ${item}`);
+    }
     return newLines.join('\n');
 }
 exports.insertIntoSection = insertIntoSection;
